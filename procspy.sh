@@ -3,7 +3,7 @@
 # Capture du signal SIGINT pour quitter proprement avec Ctrl+C
 trap "echo -e '\n[+] Script arrêté.'; exit 0" SIGINT
 
-echo "🔍 Surveillance des processus de 'administrator'. Appuie sur 'q' pour quitter."
+echo "🔍 Surveillance des processus de 'c2-api'. Appuie sur 'q' pour quitter."
 
 while true; do
     # Vérifier si l'utilisateur appuie sur 'q' pour quitter
@@ -14,10 +14,10 @@ while true; do
     fi
 
     # Récupérer l'UID de l'utilisateur cible
-    TARGET_UID=$(id -u administrator 2>/dev/null)
+    TARGET_UID=$(id -u c2-api 2>/dev/null)
 
     if [ -z "$TARGET_UID" ]; then
-        echo "[-] Utilisateur 'administrator' introuvable."
+        echo "[-] Utilisateur 'c2-api' introuvable."
         exit 1
     fi
 
@@ -29,7 +29,7 @@ while true; do
 
             # Si le processus appartient à l'utilisateur cible
             if [ "$PROC_UID" -eq "$TARGET_UID" ] 2>/dev/null; then
-                echo "🔍 Processus détecté : PID $pid exécuté par administrator"
+                echo "🔍 Processus détecté : PID $pid exécuté par c2-api"
 
                 # Lire la commande exécutée
                 echo "📜 Commande exécutée :"
