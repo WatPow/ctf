@@ -3,7 +3,7 @@
 # Capture du signal SIGINT pour quitter proprement avec Ctrl+C
 trap "echo -e '\n[+] Script arrêté.'; exit 0" SIGINT
 
-echo "🔍 Surveillance des processus de 'c2-api'. Appuie sur 'q' pour quitter."
+echo "🔍 Surveillance des processus de 'backup'. Appuie sur 'q' pour quitter."
 
 while true; do
     # Vérifier si l'utilisateur appuie sur 'q' pour quitter
@@ -14,10 +14,10 @@ while true; do
     fi
 
     # Récupérer l'UID de l'utilisateur cible
-    TARGET_UID=$(id -u c2-api 2>/dev/null)
+    TARGET_UID=$(id -u backup 2>/dev/null)
 
     if [ -z "$TARGET_UID" ]; then
-        echo "[-] Utilisateur 'c2-api' introuvable."
+        echo "[-] Utilisateur 'backup' introuvable."
         exit 1
     fi
 
